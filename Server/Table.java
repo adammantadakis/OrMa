@@ -4,9 +4,10 @@ public class Table {
 	private LatLng lat_lng;
 	private int seats;
 	private int floor;
-	private List<Order> order;
+	private Order order;
 	private double balance;
-	public enum status{ free, reserved, calling, to_clean };
+	public enum Status { FREE, RESERVED, PAID, CALLING, TO_CLEAN, NORMAL, TAKEN };
+	private Status status = FREE;
 
 	Table(String id, LatLng lat_lng, int seats, int floor, double balance)
 	{
@@ -15,7 +16,6 @@ public class Table {
 		this.seats = seats;
 		this.floor = floor;
 		this.balance = balance;
-	
 	}
 	
 	
@@ -23,20 +23,18 @@ public class Table {
 	{
 		//kaleitai otan enas pelatis pataei to TableButton
 		
-		Waiter WaiterObject = new Waiter(); //ftiaxnw ena object gia tin klasi waiter
-		WaiterObject.findBestForTable() = w;  //kalw ti sunartisi findBestForTable apo tin klasi Waiter
-		WaiterObject.notify(w); //kalw tin notify() apo waiter dinontas tis ws eisodo ton waiter p brike i findBestForTable
-		
+		Waiter w; //dilwnw waiter
+		w = Waiter.findBestForTable(this); //bazw sto w auto p epistrefei to findBestForTable
+		TableCallNotification n = new TableCallNotification( this, w ); // dimiourgw ena table notification n 
+		// to opoio pairnei san orisma to table kai ton waiter
+		w.notify( n ); // notify ton waiter me to notification p dimiourgi8ike	
 	}
 
 	public boolean onOrderPaid()
 	{
 		//kaleitai otan o servitoros epile3ei ena trapezi gia plirwmi apo tin o8oni tou
-		
-		Order OrderObject = new Order(); //ftiaxnw ena object gia tin klasi Order 
-		OrderObject.setPaid(); //kalei tin sunartisi setPaid apo tin klasi Order
-		// return true;
-
+		this.order.setPaid(); 
+		return true;
 	}
 
 
@@ -44,13 +42,7 @@ public class Table {
 	{
 		//kaleitai apo tin WaitingGroup kai prepei na ekteleite mexri na bre8ei trapezi gia ena waitinggroup
 		
-		while ( wg <> NULL ) 
-		{
-			/* if  status == free && seats(enos table) == (ari8mo atomwn tou wg) 
-				wg = NULL */
-	
-		}
-		
+		//den 8a tin ulopoieisoume
 	}
 
 
@@ -58,7 +50,7 @@ public class Table {
 	{
 		//kanei ena table taken an to epile3ei o PR
 		
-		// edw prepei na allazei to status tou table pou exei bre8ei
+		this.status = TAKEN; // allazei to status tou table pou exei bre8ei
 
 	}
 
@@ -69,6 +61,7 @@ public class Table {
 
 		if (this.isAvailable() == true ) 
 		{
+			this.status = RESERVED;
 			showSuccess("Success");
 			return true; //auto gia ti setReserved antistoixo tou "return ok"
 		}
@@ -83,36 +76,42 @@ public class Table {
 
 	public boolean isAvailable()
 	{
-
-
-
-
+		if ( this.status == FREE )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 
 	public boolean onTopologyEdit(Bundle new_info)
 	{
-
-	//kalei tin validateData 
-
-
+		//kalei tin validateData 
+		if ( validateData(new_info) == true )// kanw me if tis periptwseis
+		{
+			TopologyChangeNotification n = new TopologyChangeNotification( w ); // pairnei san orisma kapoion waiter
+			//kalw tin order???
+			showSuccess("success");
+			return true;
+		}
+		else
+		{
+			showFailure("failure");
+			return false;
+		}
+		// an true gia ka8e waiter ftiaxnw neo topologyedinotification kai kalw tin order, showSuccess("success") return true
 	}
 
 
 	public boolean validateData(Bundle new_info)
 	{
 
-	//elegxei tin egkurotita tis allagis stin topologia
+		//elegxei tin egkurotita tis allagis stin topologia
 
-	if (new_info getString("is_new") == "free") //an to trapezi pou allazei-diagrafei einai elef8ero ton afinei
-		{
-			return true;
-		}
-	else  //an exei ekremotites den ton afinei
-		{ 
-		return false; 
-		}
-
+		//de 8a ulopoii8ei
 	}
 
 }
