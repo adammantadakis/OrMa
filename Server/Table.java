@@ -57,20 +57,8 @@ public class Table {
 
 	public void setReserved()
 	{
-		//kalei tin isavailable kai an einai true kalei ti showsuccess alliw showfailure
-
-		if (this.isAvailable() == true ) 
-		{
-			this.status = RESERVED;
-			showSuccess("Success");
-			return true; //auto gia ti setReserved antistoixo tou "return ok"
-		}
-		else
-		{
-			showFailure("Failure");
-			return false; //auto gia ti setReserved antistoixo tou "return failed"
-		}
-
+		//kanei ena table reserved an to epile3ei o Admin
+		this.status = RESERVED;
 	}
 
 
@@ -90,10 +78,12 @@ public class Table {
 	public boolean onTopologyEdit(Bundle new_info)
 	{
 		//kalei tin validateData 
-		if ( validateData(new_info) == true )// kanw me if tis periptwseis
+		if ( validateData(new_info) == true )
 		{
-			TopologyChangeNotification n = new TopologyChangeNotification( w ); // pairnei san orisma kapoion waiter
-			//kalw tin order???
+			//Gia ka8e Waiter w{
+				TopologyChangeNotification n = new TopologyChangeNotification( w ); // pairnei san orisma kapoion waiter
+				w.notify(n);
+			//}
 			showSuccess("success");
 			return true;
 		}
@@ -102,7 +92,6 @@ public class Table {
 			showFailure("failure");
 			return false;
 		}
-		// an true gia ka8e waiter ftiaxnw neo topologyedinotification kai kalw tin order, showSuccess("success") return true
 	}
 
 
